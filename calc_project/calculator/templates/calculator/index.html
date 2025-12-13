@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Калькулятор на Django</title>
+</head>
+<body>
+    <h1>Калькулятор</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="num1" placeholder="Первое число" required>
+        <input type="text" name="num2" placeholder="Второе число" required>
+        <br><br>
+        <select name="operation">
+            <option value="add">Сложение</option>
+            <option value="subtract">Вычитание</option>
+            <option value="multiply">Умножение</option>
+            <option value="divide">Деление</option>
+        </select>
+        <br><br>
+        <button type="submit">Вычислить</button>
+    </form>
+
+    {% if result is not None %}
+        <h2>Результат: {{ result }}</h2>
+    {% endif %}
+    {% if error %}
+        <h2 style="color:red;">Ошибка: {{ error }}</h2>
+    {% endif %}
+</body>
+</html>
