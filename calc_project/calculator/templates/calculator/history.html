@@ -1,0 +1,18 @@
+{% extends "calculator/base.html" %}
+
+{% block content %}
+<h1>История вычислений</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" name="clear" value="1">Очистить историю</button>
+</form>
+
+<ul>
+{% for line in history_display %}
+    <li>{{ line }}</li>
+{% empty %}
+    <li>История пуста.</li>
+{% endfor %}
+</ul>
+{% endblock %}
