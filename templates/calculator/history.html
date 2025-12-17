@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>История операций</title>
+</head>
+<body>
+<div class="wrapper">
+    <div class="card">
+        <div class="header">
+            <div>
+                <div class="title">История операций</div>
+                <div class="subtitle">Список вычислений, выполненных через калькулятор</div>
+            </div>
+            <div class="links">
+                <a href="{% url 'calculator' %}">← К калькулятору</a>
+                {% if request.user.is_authenticated %}
+                    <span>{{ request.user.username }}</span>
+                    <a href="{% url 'logout' %}">Выйти</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <form method="get">
+            <label>
+                Операция
+                <select name="operation">
+                    <option value="">Любая</option>
+                    <option value="add">+</option>
+                    <option value="sub">-</option>
+                    <option value="mul">*</option>
+                    <option value="div">/</option>
+                </select>
+            </label>
+            <label>
+                Сортировка
+                <select name="ordering">
+                    <option value="-created_at">Новые сверху</option>
+                    <option value="created_at">Старые сверху</option>
+                    <option value="result">Результат ↑</option>
+                    <option value="-result">Результат ↓</option>
+                </select>
+            </label>
+            <button type="submit">Применить</button>
+        </form>
+
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Пользователь</th>
+                <th>Выражение</th>
+                <th>Результат</th>
+                <th>Создано</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for op in operations %}
+                <tr>
+                    <td>{{ op.id }}</td>
+                    <td>{{ op.user.username }}</td>
+                    <td class="expr">{{ op.a }} {{ op.operation }} {{ op.b }}</td>
+                    <td>{{ op.result }}</td>
+                    <td>{{ op.created_at }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5">Операций нет.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

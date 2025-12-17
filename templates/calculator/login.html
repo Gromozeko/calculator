@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+</head>
+<body>
+<div class="wrapper">
+    <div class="card">
+        <div class="title">Вход в аккаунт</div>
+        <div class="subtitle">Используйте учётные данные, чтобы просматривать вашу историю операций.</div>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Войти</button>
+        </form>
+
+        <div class="links">
+            <span>Нет аккаунта? <a href="{% url 'signup' %}">Зарегистрироваться</a></span>
+            <a href="{% url 'calculator' %}">← Назад к калькулятору</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Калькулятор</title>
+</head>
+<body>
+<div class="calculator-wrapper">
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <div class="title">Простой калькулятор</div>
+                <div class="subtitle">Сложение · Вычитание · Умножение · Деление</div>
+            </div>
+            <div style="display:flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+                <div class="pill">Django · Templates</div>
+                <div class="auth-links">
+                    {% if request.user.is_authenticated %}
+                        <span style="color: var(--text-muted);">{{ request.user.username }}</span>
+                        <a href="{% url 'history' %}">Моя история</a>
+                        <a href="{% url 'logout' %}">Выйти</a>
+                    {% else %}
+                        <a href="{% url 'login' %}">Войти</a>
+                        <a href="{% url 'signup' %}">Регистрация</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="field">
+                    <label for="id_a">Первое число</label>
+                    <input id="id_a" type="number" name="a" step="any" value="{{ a|default_if_none:'' }}">
+                </div>
+
+                <div class="field">
+                    <label for="id_b">Второе число</label>
+                    <input id="id_b" type="number" name="b" step="any" value="{{ b|default_if_none:'' }}">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="id_op">Операция</label>
+                <select id="id_op" name="operation">
+                    <option value="" {% if not operation %}selected{% endif %}>— выберите операцию —</option>
+                    <option value="add" {% if operation == 'add' %}selected{% endif %}>Сложение (+)</option>
+                    <option value="sub" {% if operation == 'sub' %}selected{% endif %}>Вычитание (−)</option>
+                    <option value="mul" {% if operation == 'mul' %}selected{% endif %}>Умножение (×)</option>
+                    <option value="div" {% if operation == 'div' %}selected{% endif %}>Деление (÷)</option>
+                </select>
+            </div>
+
+            <button type="submit">Посчитать</button>
+
+            <div class="helper">Введите числа, выберите операцию и нажмите «Посчитать».</div>
+        </form>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if result is not None and not error %}
+            <div class="result">Результат: <strong>{{ result }}</strong></div>
+        {% endif %}
+
+        {% if history %}
+            <div style="margin-top: 16px;">
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">
+                    История вычислений
+                </div>
+                <div style="max-height: 180px; overflow-y: auto; border-radius: 10px; border: 1px solid rgba(148, 163, 184, 0.2); background: rgba(15, 23, 42, 0.85);">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.78rem;">
+                        <thead>
+                        <tr style="color: var(--text-muted); text-align: left;">
+                            <th style="padding: 6px 10px; font-weight: 500;">№</th>
+                            <th style="padding: 6px 10px; font-weight: 500;">Выражение</th>
+                            <th style="padding: 6px 10px; font-weight: 500; text-align: right;">Результат</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in history %}
+                            <tr style="border-top: 1px solid rgba(31, 41, 55, 0.9);">
+                                <td style="padding: 6px 10px; color: var(--text-muted);">{{ forloop.counter }}</td>
+                                <td style="padding: 6px 10px;">
+                                    {% if item.operation == 'add' %}
+                                        {{ item.a }} + {{ item.b }}
+                                    {% elif item.operation == 'sub' %}
+                                        {{ item.a }} − {{ item.b }}
+                                    {% elif item.operation == 'mul' %}
+                                        {{ item.a }} × {{ item.b }}
+                                    {% elif item.operation == 'div' %}
+                                        {{ item.a }} ÷ {{ item.b }}
+                                    {% else %}
+                                        {{ item.a }} ? {{ item.b }}
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 6px 10px; text-align: right; color: #bbf7d0;">{{ item.result }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>
